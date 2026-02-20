@@ -1,6 +1,5 @@
 {
   "goods": [
-    // 已有商品1
     {
       "id": 1,
       "name": "Roblox 古风建筑模型包",
@@ -13,7 +12,6 @@
       "creator": "Li Ming (Raptor Tech 资深建模师)",
       "date": "2026-01-15"
     },
-    // 新增商品4（用模板填充）
     {
       "id": 4,
       "name": "Roblox 古风特效脚本包",
@@ -26,6 +24,5 @@
       "creator": "Zhao Yang (Raptor Tech 特效工程师)",
       "date": "2026-02-20"
     }
-    // 继续添加更多商品...
   ]
 }
