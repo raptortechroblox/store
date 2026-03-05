@@ -1,4 +1,4 @@
-const DISCORD_CLIENT_ID = ""; // 填寫您的 Client ID
+const DISCORD_CLIENT_ID = "1305849017049026633"; // 填寫您的 Client ID
 const REDIRECT_URI = window.location.origin + window.location.pathname; 
 
 let productsData = [];
