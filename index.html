@@ -1,61 +1,519 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Raptor Tech | Roblox Dev Assets</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raptor Tech | Roblox Development</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#050505',
+                            neon: '#00D8FF',
+                            magenta: '#FF0055',
+                            purple: '#8A2BE2'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor for custom GSAP cursor */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00D8FF;
+        }
+
+        /* Text Outline Utility */
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Custom Cursor Elements */
+        #cursor-dot,
+        #cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #00D8FF;
+        }
+        #cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(0, 216, 255, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        
+        /* 3D Canvas Background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+    </style>
 </head>
-<body>
-  <!-- Header -->
-  <header class="header">
-    <div class="container">
-      <div class="logo">
-        <h1>Raptor Tech <span>Roblox Dev Assets</span></h1>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#goods">Products</a></li>
-          <li><a href="#about">About</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<body class="antialiased font-sans selection:bg-brand-neon selection:text-black">
 
-  <!-- Banner -->
-  <section id="home" class="banner">
-    <div class="container">
-      <h2>Premium Roblox Development Assets</h2>
-      <p>Professional tools and packs to power your Roblox creations</p>
-    </div>
-  </section>
+    <!-- Custom Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
 
-  <!-- Products -->
-  <section id="goods" class="goods-section">
-    <div class="container">
-      <h2 class="section-title">Our Products</h2>
-      <div id="goods-list" class="goods-grid">
-        <div class="loading">Loading...</div>
-      </div>
-    </div>
-  </section>
+    <!-- 3D Background -->
+    <div id="canvas-container"></div>
 
-  <!-- About -->
-  <section id="about" class="about-section">
-    <div class="container">
-      <h2 class="section-title">About Raptor Tech</h2>
-      <p>We create high-quality development assets for Roblox creators, from models and scripts to UI kits. Our mission is to help you build better games, faster.</p>
-    </div>
-  </section>
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 border-b border-white/5 bg-brand-dark/50 backdrop-blur-md transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="text-xl font-black tracking-tighter hover-target flex items-center gap-2 text-white">
+                RAPTOR<span class="text-brand-neon">TECH</span>
+            </a>
+            
+            <!-- Links & Auth -->
+            <div class="hidden md:flex items-center gap-8 font-mono text-sm">
+                <a href="#about" class="hover-target text-white/70 hover:text-brand-neon transition-colors">關於</a>
+                <a href="#shop" class="hover-target text-white/70 hover:text-brand-neon transition-colors">商城</a>
+                <a href="#features" class="hover-target text-white/70 hover:text-brand-neon transition-colors">價值</a>
+                
+                <!-- Discord Login Button -->
+                <button id="discord-login-btn" class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-[#5865F2] hover:border-[#5865F2] transition-all duration-300 hover-target ml-4">
+                    <iconify-icon icon="simple-icons:discord" class="text-lg text-white/70 group-hover:text-white transition-colors"></iconify-icon>
+                    <span class="font-bold text-white/70 group-hover:text-white transition-colors" id="discord-login-text">Discord 登入</span>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <div class="md:hidden flex items-center">
+                <button class="text-white hover-target p-2">
+                    <iconify-icon icon="solar:hamburger-menu-linear" class="text-2xl"></iconify-icon>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2026 Raptor Tech | All Rights Reserved</p>
-    </div>
-  </footer>
+    <!-- Main Content -->
+    <main class="relative z-10">
+        
+        <!-- Hero Section -->
+        <section class="min-h-screen flex items-center justify-center pt-20 px-6">
+            <div class="max-w-7xl mx-auto w-full text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-neon/30 bg-brand-neon/5 text-brand-neon font-mono text-sm mb-8 gsap-fade-up">
+                    <span class="w-2 h-2 rounded-full bg-brand-neon animate-pulse"></span>
+                    ROBLOX DEVELOPMENT STUDIO
+                </div>
+                <h1 class="text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter leading-none mb-6 gsap-fade-up" style="animation-delay: 0.1s;">
+                    BUILD THE <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-neon via-brand-purple to-brand-magenta">FUTURE</span>
+                </h1>
+                <p class="text-white/50 text-lg md:text-xl max-w-2xl mx-auto font-mono mb-10 gsap-fade-up" style="animation-delay: 0.2s;">
+                    專注於 Roblox 平台的高階系統開發。提供從基礎框架到深度客製化的一站式解決方案，打造極致的遊戲體驗。
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 gsap-fade-up" style="animation-delay: 0.3s;">
+                    <a href="#shop" class="w-full sm:w-auto px-8 py-4 bg-white text-black font-bold font-mono rounded-none hover:bg-brand-neon transition-colors hover-target text-center">
+                        瀏覽商城
+                    </a>
+                    <a href="https://discord.gg/KxY3NckXDq" target="_blank" class="w-full sm:w-auto px-8 py-4 border border-white/20 hover:border-white transition-colors font-mono hover-target flex items-center justify-center gap-2">
+                        加入 Discord <iconify-icon icon="simple-icons:discord"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+        </section>
 
-  <script src="script.js"></script>
+        <!-- Product List / Shop Section -->
+        <section id="shop" class="py-32 relative z-10 border-t border-white/10 bg-brand-dark/50">
+            <div class="max-w-7xl mx-auto px-6 md:px-12">
+                <div class="mb-16 flex flex-col md:flex-row md:justify-between md:items-end gap-6 gsap-reveal">
+                    <div>
+                        <span class="font-mono text-brand-neon">/ 02 . STORE</span>
+                        <h2 class="text-5xl md:text-7xl font-bold uppercase mt-4">精選產品<br><span class="text-outline">Top Products</span></h2>
+                    </div>
+                    <div class="font-mono text-white/50 max-w-sm">
+                        我們提供多款即插即用的高階系統，支援 Robux 購買，點擊購買將引導至我們的 Discord 伺服器開票取得。
+                    </div>
+                </div>
+                
+                <!-- JSON 渲染的容器 -->
+                <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Products will be injected here via JavaScript -->
+                </div>
+
+                <!-- 更多商品引導 -->
+                <div class="mt-16 text-center gsap-reveal">
+                    <a href="https://discord.gg/KxY3NckXDq" target="_blank" class="group inline-flex items-center gap-3 px-8 py-4 rounded-full border border-brand-neon/30 bg-brand-neon/5 hover:bg-brand-neon hover:text-black transition-all duration-300 font-mono text-brand-neon hover-target">
+                        <span>更多商品皆在 Discord</span>
+                        <iconify-icon icon="solar:arrow-right-up-linear" class="text-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="py-12 border-t border-white/10 bg-black relative z-10">
+            <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-white/30 font-mono text-sm">
+                    &copy; 2026 Raptor Tech. All rights reserved.
+                </div>
+                <div class="flex gap-4">
+                    <a href="#" class="text-white/50 hover:text-brand-neon transition-colors hover-target text-xl"><iconify-icon icon="simple-icons:roblox"></iconify-icon></a>
+                    <a href="#" class="text-white/50 hover:text-[#5865F2] transition-colors hover-target text-xl"><iconify-icon icon="simple-icons:discord"></iconify-icon></a>
+                    <a href="#" class="text-white/50 hover:text-brand-magenta transition-colors hover-target text-xl"><iconify-icon icon="simple-icons:youtube"></iconify-icon></a>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        // ==========================================
+        // 真實 Discord OAuth 配置
+        // 1. 到 https://discord.com/developers/applications 建立 App
+        // 2. 在 OAuth2 頁面加入 Redirect URI (就是您目前網站的網址)
+        // 3. 將 Client ID 貼到下方的引號內
+        // ==========================================
+        const DISCORD_CLIENT_ID = ""; // 例: "123456789012345678"
+        const REDIRECT_URI = window.location.origin + window.location.pathname; 
+
+        // --- 1. Product Data (JSON) ---
+        const productsData = [
+            {
+                title: "ACS 2.0.1 Modded",
+                description: "深度改裝的 ACS 戰鬥系統核心，提供極致的射擊手感與穩定性。",
+                price: "2,500",
+                icon: "solar:target-bold-duotone",
+                colorClass: "text-brand-neon",
+                hoverClass: "hover:border-brand-neon",
+                btnHoverClass: "hover:text-brand-magenta"
+            },
+            {
+                title: "Raptor App Center V1",
+                description: "全自動化的招募與申請中心系統，完美整合 Discord Webhook。",
+                price: "500",
+                icon: "solar:document-text-bold-duotone",
+                colorClass: "text-brand-magenta",
+                hoverClass: "hover:border-brand-magenta",
+                btnHoverClass: "hover:text-brand-neon"
+            },
+            {
+                title: "Raptor Moderation",
+                description: "強大的伺服器管理與 UI 懲處系統，有效維持遊戲環境秩序。",
+                price: "300",
+                icon: "solar:hammer-bold-duotone",
+                colorClass: "text-brand-purple",
+                hoverClass: "hover:border-brand-purple",
+                btnHoverClass: "hover:text-brand-neon"
+            },
+            {
+                title: "Raptor Basic Gun Sys",
+                description: "輕量化且高效的基礎槍械系統，適合各類遊戲快速導入與修改。",
+                price: "250",
+                icon: "solar:gamepad-bold-duotone",
+                colorClass: "text-white",
+                hoverClass: "hover:border-white",
+                btnHoverClass: "hover:text-brand-magenta"
+            }
+        ];
+
+        // 渲染產品到網頁上
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            if (!grid) return;
+            
+            let html = '';
+            productsData.forEach(product => {
+                html += `
+                    <div class="glass p-8 rounded-2xl border border-white/10 ${product.hoverClass} transition-colors group gsap-reveal flex flex-col hover-target">
+                        <div class="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center text-3xl ${product.colorClass} mb-6 group-hover:scale-110 transition-transform duration-500">
+                            <iconify-icon icon="${product.icon}"></iconify-icon>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">${product.title}</h3>
+                        <p class="text-white/50 font-mono text-sm mb-8 flex-grow">${product.description}</p>
+                        <div class="flex items-center justify-between border-t border-white/10 pt-6">
+                            <div class="flex items-center gap-2 ${product.colorClass} font-mono font-bold text-lg">
+                                <iconify-icon icon="simple-icons:roblox"></iconify-icon> ${product.price}
+                            </div>
+                            <a href="https://discord.gg/KxY3NckXDq" target="_blank" class="text-sm font-bold uppercase ${product.btnHoverClass} transition-colors flex items-center gap-1">
+                                購買 <iconify-icon icon="solar:arrow-right-up-linear"></iconify-icon>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        // --- 2. Real Discord OAuth Flow ---
+        function setupDiscordAuth() {
+            const loginBtn = document.getElementById('discord-login-btn');
+            if(!loginBtn) return;
+
+            // UI 狀態切換函數
+            function setLoginState(state, user = null) {
+                if (state === 'loading') {
+                    loginBtn.classList.add('loading');
+                    loginBtn.innerHTML = `
+                        <iconify-icon icon="line-md:loading-loop" class="text-lg text-white"></iconify-icon>
+                        <span class="font-bold text-white">驗證中...</span>
+                    `;
+                } else if (state === 'success') {
+                    loginBtn.classList.remove('loading');
+                    loginBtn.classList.add('logged-in');
+                    loginBtn.classList.remove('bg-white/5', 'hover:bg-[#5865F2]', 'border-white/10');
+                    loginBtn.classList.add('bg-[#5865F2]/20', 'border-[#5865F2]/50');
+                    
+                    loginBtn.innerHTML = `
+                        <img src="${user.avatar}" class="w-6 h-6 rounded-full bg-black/50 border border-[#5865F2]/50" alt="Avatar">
+                        <span class="font-bold text-white font-mono text-sm">${user.username}</span>
+                    `;
+                }
+            }
+
+            // 步驟 A: 檢查網址列是否帶有 Discord 的 Token (當使用者授權完成被轉向回來時)
+            const fragment = new URLSearchParams(window.location.hash.slice(1));
+            const accessToken = fragment.get('access_token');
+
+            if (accessToken) {
+                setLoginState('loading');
+                
+                // 拿著 Token 去敲 Discord API 獲取真實用戶資料
+                fetch('https://discord.com/api/users/@me', {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.id) {
+                        // 處理大頭貼網址 (有頭像用頭像，沒頭像用預設)
+                        const avatarUrl = data.avatar 
+                            ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`
+                            : `https://cdn.discordapp.com/embed/avatars/${(data.discriminator || 0) % 5}.png`;
+                        
+                        setLoginState('success', {
+                            username: data.global_name || data.username,
+                            avatar: avatarUrl
+                        });
+                        
+                        // 清除網址列後方的 access_token，讓網址變乾淨
+                        window.history.replaceState(null, null, window.location.pathname);
+                    }
+                })
+                .catch(err => {
+                    console.error("登入驗證失敗:", err);
+                    loginBtn.classList.remove('loading');
+                });
+            }
+
+            // 步驟 B: 按下登入按鈕的行為
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if(this.classList.contains('logged-in') || this.classList.contains('loading')) return;
+
+                if (DISCORD_CLIENT_ID !== "") {
+                    // 若有填寫 Client ID，重新導向到真實的 Discord 驗證畫面
+                    const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
+                    window.location.href = oauthUrl;
+                } else {
+                    // 若沒填寫 Client ID，防呆並執行模擬登入 (開發測試用)
+                    setLoginState('loading');
+                    setTimeout(() => {
+                        setLoginState('success', {
+                            username: "TestUser",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=RaptorUser"
+                        });
+                        alert("提示：要啟用真實登入，請在原始碼最上方的 DISCORD_CLIENT_ID 填入您的 Client ID。");
+                    }, 1000);
+                }
+            });
+        }
+
+        // 初始化
+        renderProducts();
+        setupDiscordAuth();
+
+        // --- 3. GSAP Animations & Cursor ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Custom Cursor Logic
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
+        const xSetDot = gsap.quickSetter(cursorDot, "x", "px");
+        const ySetDot = gsap.quickSetter(cursorDot, "y", "px");
+        const xSetOutline = gsap.quickSetter(cursorOutline, "x", "px");
+        const ySetOutline = gsap.quickSetter(cursorOutline, "y", "px");
+
+        window.addEventListener("mousemove", e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            xSetDot(mouseX);
+            ySetDot(mouseY);
+            
+            gsap.to(cursorOutline, {
+                x: mouseX,
+                y: mouseY,
+                duration: 0.15,
+                ease: "power2.out"
+            });
+        });
+
+        const hoverTargets = document.querySelectorAll('.hover-target');
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+                cursorOutline.style.backgroundColor = 'rgba(0, 216, 255, 0.1)';
+            });
+            target.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.backgroundColor = 'transparent';
+            });
+        });
+
+        gsap.fromTo(".gsap-fade-up", 
+            { y: 50, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out" }
+        );
+
+        gsap.utils.toArray('.gsap-reveal').forEach(elem => {
+            gsap.fromTo(elem, 
+                { y: 50, opacity: 0 },
+                {
+                    y: 0, opacity: 1,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: elem,
+                        start: "top 85%",
+                        toggleActions: "play none none none"
+                    }
+                }
+            );
+        });
+
+        // --- 4. Three.js Background (Simple Particles) ---
+        const initThreeJS = () => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 700;
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for(let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 10;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const material = new THREE.PointsMaterial({
+                size: 0.015,
+                color: 0x00D8FF,
+                transparent: true,
+                opacity: 0.4
+            });
+
+            const particlesMesh = new THREE.Points(particlesGeometry, material);
+            scene.add(particlesMesh);
+
+            camera.position.z = 3;
+
+            let mouseX = 0;
+            let mouseY = 0;
+            document.addEventListener('mousemove', (event) => {
+                mouseX = event.clientX / window.innerWidth - 0.5;
+                mouseY = event.clientY / window.innerHeight - 0.5;
+            });
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                
+                particlesMesh.rotation.y += 0.001;
+                particlesMesh.rotation.x += 0.0005;
+                
+                particlesMesh.rotation.y += mouseX * 0.05;
+                particlesMesh.rotation.x += mouseY * 0.05;
+
+                renderer.render(scene, camera);
+            };
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+        
+        window.addEventListener('load', initThreeJS);
+
+    </script>
 </body>
 </html>
