@@ -1,0 +1,38 @@
+[
+  {
+    "title": "ACS 2.0.1 Modded",
+    "description": "深度改裝的 ACS 戰鬥系統核心，提供極致的射擊手感與穩定性。",
+    "price": "2,500",
+    "icon": "solar:target-bold-duotone",
+    "colorClass": "text-brand-neon",
+    "hoverClass": "hover:border-brand-neon",
+    "btnHoverClass": "hover:text-brand-magenta"
+  },
+  {
+    "title": "Raptor App Center V1",
+    "description": "全自動化的招募與申請中心系統，完美整合 Discord Webhook。",
+    "price": "500",
+    "icon": "solar:document-text-bold-duotone",
+    "colorClass": "text-brand-magenta",
+    "hoverClass": "hover:border-brand-magenta",
+    "btnHoverClass": "hover:text-brand-neon"
+  },
+  {
+    "title": "Raptor Moderation",
+    "description": "強大的伺服器管理與 UI 懲處系統，有效維持遊戲環境秩序。",
+    "price": "300",
+    "icon": "solar:hammer-bold-duotone",
+    "colorClass": "text-brand-purple",
+    "hoverClass": "hover:border-brand-purple",
+    "btnHoverClass": "hover:text-brand-neon"
+  },
+  {
+    "title": "Raptor Basic Gun Sys",
+    "description": "輕量化且高效的基礎槍械系統，適合各類遊戲快速導入與修改。",
+    "price": "250",
+    "icon": "solar:gamepad-bold-duotone",
+    "colorClass": "text-white",
+    "hoverClass": "hover:border-white",
+    "btnHoverClass": "hover:text-brand-magenta"
+  }
+]
